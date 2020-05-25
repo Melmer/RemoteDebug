@@ -218,6 +218,7 @@
 #define rprintEln(x, ...)	if (Debug.isActive(Debug.ERROR)) 	Debug.println(x, ##__VA_ARGS__)
 #define rprintAln(x, ...)	if (Debug.isActive(Debug.ANY)) 		Debug.println(x, ##__VA_ARGS__)
 
+
 ///// Class
 
 class RemoteDebug: public Print
@@ -274,6 +275,7 @@ class RemoteDebug: public Print
 	void onConnection(boolean connected);
 
 	boolean isConnected();
+	boolean isRunning();
 
 #ifdef DEBUGGER_ENABLED
 	// For Simple software debugger - based on SerialDebug Library
@@ -315,7 +317,7 @@ class RemoteDebug: public Print
 private:
 
 	// Variables
-
+	bool _isRunning = false;
 	String _hostName = "";				// Host name
 
 	boolean _connected = false;			// Client is connected ?

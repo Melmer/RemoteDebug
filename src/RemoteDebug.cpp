@@ -290,7 +290,7 @@ bool RemoteDebug::begin(String hostName, uint16_t port,  uint8_t startingDebugLe
 
 	_clientDebugLevel = startingDebugLevel;
 	_lastDebugLevel = startingDebugLevel;
-
+	_isRunning = true;
 	return true;
 }
 
@@ -356,7 +356,7 @@ void RemoteDebug::stop() {
 
 	DebugWS.stop();                 // stop the websocket server
 #endif
-
+	_isRunning = false;
 }
 
 // Handle the connection (in begin of loop in sketch)
@@ -565,29 +565,6 @@ void RemoteDebug::handle() {
 		}
 #endif
 
-#ifdef MAX_TIME_INACTIVE
-#if MAX_TIME_INACTIVE > 0
-
-		// Inactivity - close connection if not received commands from user in telnet
-		// For reduce overheads
-
-		uint32_t maxTime = MAX_TIME_INACTIVE; // Normal
-
-		if (_password != "" && !_passwordOk) { // Request password - 18/08/08
-			maxTime = 60000; // One minute to password
-		}
-
-		if ((millis() - _lastTimeCommand) > maxTime) {
-
-			debugPrintln("* Closing session by inactivity");
-
-			// Disconnect
-
-			disconnect();
-			return;
-		}
-#endif
-#endif
 	}
 
 #ifndef WEBSOCKET_DISABLED // For websocket server
@@ -737,6 +714,14 @@ boolean RemoteDebug::isConnected() {
 	return _connected;
 #endif
 }
+
+
+boolean RemoteDebug::isRunning() {
+	return _isRunning;
+}
+
+
+
 
 // Send to serial too (use only if need)
 
